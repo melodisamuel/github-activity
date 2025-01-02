@@ -1,10 +1,12 @@
+#!/usr/bin/env node
+
 import axios from "axios";
 import { Command } from "commander";
 
 interface GithubEvent {
   type: string;
   repo: { name: string };
-  createad_at: string;
+  created_at: string;
 }
 
 const program = new Command();
@@ -30,10 +32,12 @@ program
         response.data.slice(0, 5).forEach((event, index) => {
             const type = event.type.replace('Event', ' ');
             const repoName = event.repo.name;
-            const date = new Date(event.createad_at).toLocaleDateString();
+            const date = new Date(event.created_at).toLocaleDateString();
 
             console.log(`${index + 1}. ${type} in repository: ${repoName} (${date})`);;
         });
+
+        // Handle errors
     } catch (error: any) {
         if(error.response?.status === 404) {
             console.log('User not found. Please check the username and try again');
@@ -42,3 +46,6 @@ program
         }
     }
   })
+
+  // Parse command line arguments 
+  program.parse(process.argv)
